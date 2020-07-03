@@ -6,28 +6,44 @@ public class Activate : MonoBehaviour
 {
     public GameObject[] models;
   
-    // Start is called before the first frame update
-    void Start()
+    public void ActivateSelectedModel(int index)
     {
-      
-    }
-
-    // Update is called once per frame
-    private void FixedUpdate()
-    {
-        //info.transform.LookAt(Camera.main.transform);
-        //info.transform.rotation = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
-    }
-
-    public void ActivateSelectedModel(int modelIndex)
-    {
-        for(int i=0;i<models.Length;i++)
+        if (index < 0 || index >= models.Length)
         {
-            models[i].SetActive(false);
+            Debug.LogError("index of the selected item is out of range!");
+            return;
         }
-        models[modelIndex].SetActive(true);
-        Debug.Log("switch");
+
+        foreach (var model in models)
+            model.SetActive(false);
+
+        models[index].SetActive(true);
+
     }
+
+
+    public void ActivateSelectedModelOnRunTime(int index)
+    {
+       
+        if (GameObject.Find("PlacedObject(Clone)"))
+        {
+            GameObject _models = GameObject.Find("PlacedObject(Clone)");
+            GameObject[] Ch_models = new GameObject[3];
+
+            for (int i = 0; i < Ch_models.Length; i++)
+            {
+                Ch_models[i] = _models.transform.GetChild(i).gameObject;
+                Debug.Log("All children found");
+            }
+
+            foreach (var model in Ch_models)
+                model.SetActive(false);
+
+            Ch_models[index].SetActive(true);
+        }
+        ActivateSelectedModel(index);
+    }
+
 
     public void displayInfo()
     {
@@ -36,6 +52,9 @@ public class Activate : MonoBehaviour
             if(models[i].activeInHierarchy==true)
             {
                 GameObject info = models[i].transform.Find("Info").gameObject;
+                if (info == null)
+                    Debug.Log("Null");
+                else
                 info.SetActive(true);
 
             }
